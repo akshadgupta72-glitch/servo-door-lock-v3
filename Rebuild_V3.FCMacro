@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: MIT
+"""Rebuild and validate V3 using FreeCAD's GUI Python runtime."""
+import importlib.util
+from pathlib import Path
+
+import FreeCADGui as Gui
+
+root = Path(__file__).resolve().parent
+spec = importlib.util.spec_from_file_location("v3_rebuild", root / "build_model.py")
+builder = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(builder)
+document = builder.build()
+report = builder.validate(document)
+builder.export(document, report)
+Gui.activeDocument().activeView().viewAxonometric()
+Gui.activeDocument().activeView().fitAll()

@@ -1,0 +1,66 @@
+# SPDX-License-Identifier: MIT
+import os
+import importlib.util
+import FreeCAD as App
+import FreeCADGui as Gui
+from PySide6 import QtCore, QtWidgets
+
+root = os.path.dirname(os.path.abspath(__file__))
+spec = importlib.util.spec_from_file_location('round_handle_builder', os.path.join(root,'build_model.py'))
+builder = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(builder)
+
+
+class Preview(QtWidgets.QDialog):
+    def __init__(self):
+        super().__init__(Gui.getMainWindow())
+        self.setWindowTitle('Glue-on joint V3 - 35 mm travel')
+        self.setMinimumWidth(380)
+        self.doc = builder.build()
+        self.initial = builder.initial_placements(self.doc)
+        layout = QtWidgets.QVBoxLayout(self)
+        self.readout = QtWidgets.QLabel()
+        layout.addWidget(self.readout)
+        self.slider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        self.slider.setRange(0,90)
+        layout.addWidget(self.slider)
+        self.play = QtWidgets.QPushButton('Play')
+        self.play.setCheckable(True)
+        layout.addWidget(self.play)
+        self.timer = QtCore.QTimer(self)
+        self.timer.setInterval(45)
+        self.direction = 1
+        self.timer.timeout.connect(self.tick)
+        self.play.toggled.connect(self.toggle)
+        self.slider.valueChanged.connect(self.update)
+        self.slider.setValue(35)
+        Gui.activeDocument().activeView().viewAxonometric()
+        Gui.activeDocument().activeView().fitAll()
+
+    def update(self, angle):
+        if App.getDocument(self.doc.Name) is None:
+            self.close()
+            return
+        travel = builder.pose(self.doc,self.initial,angle)
+        self.readout.setText('Servo: %d deg     Lock: %.2f / 35 mm' % (angle,travel))
+
+    def toggle(self, enabled):
+        self.play.setText('Pause' if enabled else 'Play')
+        self.timer.start() if enabled else self.timer.stop()
+
+    def tick(self):
+        value = self.slider.value()+self.direction
+        if value >=90 or value <=0:
+            self.direction *= -1
+        self.slider.setValue(max(0,min(90,value)))
+
+    def closeEvent(self,event):
+        self.timer.stop()
+        super().closeEvent(event)
+
+
+old = getattr(Gui,'round_handle_preview',None)
+if old is not None:
+    old.close()
+Gui.round_handle_preview = Preview()
+Gui.round_handle_preview.show()

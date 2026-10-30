@@ -1,0 +1,23 @@
+{
+  "sweep_degrees": [
+    0,
+    90
+  ],
+  "samples": 91,
+  "travel_mm": 35,
+  "all_shapes_valid_single_solids": true,
+  "selected_interference_max_volume_mm3": {
+    "Print_clamp_yoke / SG90_reference": 0.0,
+    "Print_clamp_yoke / Print_servo_arm": 0.0,
+    "Print_clamp_yoke / Pin_shoulder_reference": 0.0,
+    "Print_clamp_yoke / Round_handle_10mm": 0.0,
+    "Print_clamp_yoke / Front_barrel": 0.0,
+    "Print_clamp_yoke / Rear_barrel": 0.0,
+    "Print_servo_arm / Round_handle_10mm": 0.0,
+    "Print_servo_arm / SG90_reference": 0.0,
+    "Print_clamp_yoke / Supplied_servo_horn": 0.0,
+    "Print_clamp_yoke / Pin_screw_reference": 0.0,
+    "Print_servo_mount / SG90_reference": 0.0
+  },
+  "limitations": "Ideal rigid geometry only; no force, friction, hardware-fastener or print-tolerance validation."
+}
