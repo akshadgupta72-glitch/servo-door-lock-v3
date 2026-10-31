@@ -126,7 +126,23 @@ does not provide them.
 
 The preview is kinematic only: it does not simulate force, friction, servo
 electronics, collisions between every component, or real-world reliability.
-There is no Arduino firmware or battery-lifetime claim in this release.
+There is no battery-lifetime claim in this release.
+
+## Arduino Configuration Code
+
+The supplied C++ sketch is available at
+[arduino/DoorLockConfig/DoorLockConfig.ino](arduino/DoorLockConfig/DoorLockConfig.ino).
+It uses **Servo** and **IRremote**, with servo signal on **D9**, IR input on
+**D2**, buzzer control on **D13**, and Serial Monitor at **9600 baud**.
+
+The code is preserved as supplied: rest is **0 degrees**, lock is **70
+degrees**, and every decoded non-repeat IR message toggles the state.
+It commands the rest/unlocked position at startup. Its 70-degree endpoint
+differs from the CAD's 90-degree full-travel pose.
+
+Read [Arduino setup and limitations](arduino/README.md) before use, including
+the Uno `tone()`/IRremote timer conflict. This is prototype code without
+authentication, physical lock-state feedback, or low-power control.
 
 ## Verification
 
@@ -148,7 +164,7 @@ Copyright 2026 akshadgupta72-glitch.
 
 - CAD, STL, STEP, preview images, design data and documentation:
   **[CC BY 4.0](LICENSES/CC-BY-4.0.txt)**.
-- Python scripts and FreeCAD macros: **[MIT](LICENSES/MIT.txt)**.
+- Python scripts, FreeCAD macros and Arduino code: **[MIT](LICENSES/MIT.txt)**.
 
 Suggested attribution: "Servo Door Lock V3 by akshadgupta72-glitch,
 https://github.com/akshadgupta72-glitch/servo-door-lock-v3, CC BY 4.0."
